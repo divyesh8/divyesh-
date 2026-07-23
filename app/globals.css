@@ -1,0 +1,268 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS
+   Monochrome + a single accent. No gradients beyond one dim
+   accent wash. Every value below is used; nothing decorative.
+   ============================================================ */
+@theme {
+  --color-ink: #0a0a0a;
+  --color-surface: #111111;
+  --color-accent: #4f8cff;
+  --color-accent-dim: rgba(79, 140, 255, 0.12);
+  --color-accent-glow: rgba(79, 140, 255, 0.28);
+
+  --font-display: var(--font-instrument-sans), ui-sans-serif, system-ui,
+    sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --shadow-lift: 0 1px 1px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35),
+    0 24px 64px rgba(0, 0, 0, 0.45);
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 24px 80px rgba(0, 0, 0, 0.6);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-caret: caret 1.05s steps(1) infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes caret {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   THEME SURFACES
+   Dark is the default and the designed-for state. Light is a
+   faithful inversion, not a second design.
+   ============================================================ */
+:root {
+  --bg: #0a0a0a;
+  --bg-elevated: #111111;
+  --fg: #ffffff;
+  --fg-muted: #9ca3af; /* 6.97:1 on #0A0A0A */
+  /* Eyebrows run at 11px, so this has to clear 4.5:1 rather than just
+     look subordinate. #6B7280 measured 3.78:1 and failed. */
+  --fg-subtle: #7e8695; /* 5.03:1 on #0A0A0A */
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --panel: rgba(255, 255, 255, 0.05);
+  --panel-hover: rgba(255, 255, 255, 0.07);
+  --grid-line: rgba(255, 255, 255, 0.035);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #fbfbfa;
+  --bg-elevated: #ffffff;
+  --fg: #0a0a0a;
+  --fg-muted: #52525b;
+  --fg-subtle: #71717a;
+  --line: rgba(10, 10, 10, 0.1);
+  --line-strong: rgba(10, 10, 10, 0.18);
+  --panel: rgba(10, 10, 10, 0.025);
+  --panel-hover: rgba(10, 10, 10, 0.045);
+  --grid-line: rgba(10, 10, 10, 0.045);
+  color-scheme: light;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Lenis drives scrolling; native smooth would fight it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    transition: background-color 0.5s var(--ease-out-quint),
+      color 0.5s var(--ease-out-quint);
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #ffffff;
+  }
+
+  /* Visible, on-brand keyboard focus. Never removed, only shaped. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Custom cursor replaces the native one only on real pointers. */
+  @media (hover: hover) and (pointer: fine) {
+    body[data-cursor="on"],
+    body[data-cursor="on"] * {
+      cursor: none !important;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border-radius: 99px;
+    border: 3px solid var(--bg);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+  }
+}
+
+/* ============================================================
+   COMPOSED UTILITIES
+   ============================================================ */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+@utility panel {
+  background-color: var(--panel);
+  border: 1px solid var(--line);
+}
+
+@utility text-muted {
+  color: var(--fg-muted);
+}
+
+@utility text-subtle {
+  color: var(--fg-subtle);
+}
+
+@layer utilities {
+  /* Section rule terminating in a node — the topology motif,
+     reused as structural punctuation across the page. */
+  .hairline-node {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--line-strong),
+      var(--line),
+      transparent
+    );
+  }
+
+  .hairline-node::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 99px;
+    background: var(--color-accent);
+    transform: translate(-1px, -50%);
+    box-shadow: 0 0 12px var(--color-accent-glow);
+  }
+
+  .grid-substrate {
+    background-image: linear-gradient(
+        to right,
+        var(--grid-line) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   Honour the OS setting: kill loops and transitions, keep
+   opacity so nothing is left invisible mid-reveal.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
