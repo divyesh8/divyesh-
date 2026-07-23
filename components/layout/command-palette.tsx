@@ -5,7 +5,7 @@ import { Command } from "cmdk";
 import {
   ArrowUpRight,
   Contact,
-  FileDown,
+  Eye,
   Github,
   Linkedin,
   Moon,
@@ -116,9 +116,15 @@ export function CommandPalette({
         </Command.Group>
 
         <Command.Group heading="Actions" className="cmd-group">
-          <Item onSelect={() => go(() => window.open(SITE.resumePath, "_blank"))}>
-            <FileDown className="h-4 w-4 text-[var(--fg-subtle)]" />
-            Download resume
+          <Item
+            onSelect={() =>
+              go(() =>
+                window.open(SITE.resumePath, "_blank", "noopener,noreferrer"),
+              )
+            }
+          >
+            <Eye className="h-4 w-4 text-[var(--fg-subtle)]" />
+            View resume
           </Item>
           <Item onSelect={() => go(toggle)}>
             {theme === "dark" ? (

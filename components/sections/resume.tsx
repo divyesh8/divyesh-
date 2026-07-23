@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, FileDown, FileText } from "lucide-react";
+import { ExternalLink, Eye, FileText } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal, Magnetic } from "@/components/shared/motion";
 import { Button } from "@/components/ui/button";
@@ -89,13 +89,17 @@ export function Resume() {
             <Reveal delay={0.12}>
               <div className="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-7">
                 <p className="text-[15px] leading-relaxed text-muted">
-                  Prefer a copy for your records?
+                  Open the full resume in a new tab.
                 </p>
                 <Magnetic className="mt-5">
                   <Button asChild size="md">
-                    <a href={SITE.resumePath} download>
-                      Download resume
-                      <FileDown />
+                    <a
+                      href={SITE.resumePath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View resume
+                      <Eye />
                     </a>
                   </Button>
                 </Magnetic>
@@ -116,9 +120,9 @@ function ResumeFallback() {
         Your browser cannot display the PDF inline.
       </p>
       <Button asChild variant="outline" size="sm">
-        <a href={SITE.resumePath} download>
-          Download instead
-          <FileDown />
+        <a href={SITE.resumePath} target="_blank" rel="noopener noreferrer">
+          Open in a new tab
+          <ExternalLink />
         </a>
       </Button>
     </div>

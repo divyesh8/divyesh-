@@ -61,6 +61,14 @@ export async function POST(request: Request) {
     );
   }
 
+  // The address the email is sent from must be a domain you control in Resend
+  // (or their shared onboarding address). The visitor's name becomes the
+  // display name so your inbox shows the message as coming from them, and
+  // reply_to is their address so Reply goes straight back. Strip characters
+  // that could break or inject into the header.
+  const safeName = name.replace(/[\r\n"<>]/g, " ").trim().slice(0, 80);
+  const fromAddress = process.env.CONTACT_FROM ?? "onboarding@resend.dev";
+
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -69,10 +77,10 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: process.env.CONTACT_FROM ?? "Portfolio <onboarding@resend.dev>",
+        from: `${safeName || "Portfolio"} <${fromAddress}>`,
         to: [SITE.email],
         reply_to: email,
-        subject: `Portfolio enquiry — ${name}`,
+        subject: `Portfolio — ${safeName || "New message"}`,
         text: `${message}\n\n—\n${name}\n${email}`,
       }),
     });

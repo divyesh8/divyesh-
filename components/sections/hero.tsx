@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowUpRight, FileDown, Mail } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Eye, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/shared/motion";
 import { Topology } from "@/components/shared/topology";
@@ -133,9 +133,13 @@ export function Hero() {
 
               <Magnetic>
                 <Button asChild variant="outline" size="lg">
-                  <a href={SITE.resumePath} download>
-                    Download resume
-                    <FileDown />
+                  <a
+                    href={SITE.resumePath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View resume
+                    <Eye />
                   </a>
                 </Button>
               </Magnetic>
