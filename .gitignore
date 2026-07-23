@@ -1,5 +1,10 @@
 node_modules
 .next
+
+# Local editor/tooling config — never commit
+.claude/
+.vscode/
+.idea/
 out
 build
 .DS_Store
