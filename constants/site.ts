@@ -4,7 +4,7 @@ export const SITE = {
   legalName: "Kolli Divyesh",
   role: "Full Stack Developer",
   handle: "divyesh8",
-  email: "kolli.divyesh08@gmail.com",
+  email: "kolli.divyesh@gmail.com",
   phone: "+91 99669 68300",
   location: "Chennai, India",
   university: "SRM Institute of Science and Technology",

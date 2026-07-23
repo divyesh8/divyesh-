@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Command, Menu, Moon, Sun, X } from "lucide-react";
+import { ArrowUpRight, Command, Menu, Moon, Sun, X } from "lucide-react";
 import { NAV, SECTION_IDS, SITE } from "@/constants/site";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { useTheme } from "@/hooks/use-theme";
@@ -52,7 +52,7 @@ export function Navbar({ onOpenPalette }: { onOpenPalette: () => void }) {
       <nav
         aria-label="Primary"
         className={cn(
-          "flex w-full max-w-3xl items-center gap-2 rounded-full border px-2 py-2 transition-all duration-500 ease-[var(--ease-out-quint)] sm:gap-3 sm:px-3",
+          "flex w-full max-w-4xl items-center gap-2 rounded-full border px-2 py-2 transition-all duration-500 ease-[var(--ease-out-quint)] sm:gap-3 sm:px-3",
           scrolled || menuOpen
             ? "border-[var(--line)] bg-[var(--bg)]/72 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-2xl"
             : "border-transparent bg-transparent",
@@ -115,6 +115,16 @@ export function Navbar({ onOpenPalette }: { onOpenPalette: () => void }) {
             <Command className="h-3.5 w-3.5" />
             <kbd className="font-mono text-[10px] tracking-[0.08em]">K</kbd>
           </button>
+
+          <a
+            href={SITE.resumePath}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden h-9 items-center gap-1.5 rounded-full border border-[var(--line-strong)] px-4 text-[13px] text-[var(--fg)] transition-colors duration-300 hover:border-accent hover:text-accent lg:flex"
+          >
+            Resume
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </a>
 
           <button
             type="button"
@@ -183,6 +193,18 @@ export function Navbar({ onOpenPalette }: { onOpenPalette: () => void }) {
                 </li>
               ))}
               <li className="mt-1 border-t border-[var(--line)] pt-1">
+                <a
+                  href={SITE.resumePath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-[15px] text-[var(--fg-muted)] transition-colors duration-200 hover:bg-[var(--panel)] hover:text-[var(--fg)]"
+                >
+                  <ArrowUpRight className="h-4 w-4" />
+                  Resume
+                </a>
+              </li>
+              <li>
                 <button
                   type="button"
                   onClick={() => {

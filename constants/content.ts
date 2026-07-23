@@ -216,8 +216,10 @@ export const PROJECT_FILTERS = [
 
 export type JourneyEntry = {
   year: string;
-  title: string;
-  detail: string;
+  /** Omitted for years still ahead — the timeline stays open rather than
+   *  announcing plans. */
+  title?: string;
+  detail?: string;
   status: "done" | "active" | "future";
 };
 
@@ -257,13 +259,9 @@ export const JOURNEY: JourneyEntry[] = [
       "An AI fitness platform with personalized planning and body analytics. In active development.",
     status: "active",
   },
-  {
-    year: "Next",
-    title: "Masters abroad, then an AI startup",
-    detail:
-      "Deepen the systems and research side, then build a product company around it.",
-    status: "future",
-  },
+  { year: "2027", status: "future" },
+  { year: "2028", status: "future" },
+  { year: "2029", status: "future" },
 ];
 
 export const CERTIFICATIONS = [

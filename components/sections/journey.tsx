@@ -52,7 +52,10 @@ export function Journey() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-              className="relative pb-12 pl-10 last:pb-0"
+              className={cn(
+                "relative pl-10 last:pb-0",
+                entry.title ? "pb-12" : "pb-7",
+              )}
             >
               {/* Node */}
               <span
@@ -77,7 +80,12 @@ export function Journey() {
               </span>
 
               <div className="flex flex-wrap items-center gap-3">
-                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-accent">
+                <span
+                  className={cn(
+                    "font-mono text-[11px] font-medium uppercase tracking-[0.14em]",
+                    entry.title ? "text-accent" : "text-subtle",
+                  )}
+                >
                   {entry.year}
                 </span>
                 {entry.status === "active" ? (
@@ -87,12 +95,25 @@ export function Journey() {
                 ) : null}
               </div>
 
-              <h3 className="mt-2 text-lg font-semibold sm:text-xl">
-                {entry.title}
-              </h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-muted">
-                {entry.detail}
-              </p>
+              {entry.title ? (
+                <>
+                  <h3 className="mt-2 text-lg font-semibold sm:text-xl">
+                    {entry.title}
+                  </h3>
+                  {entry.detail ? (
+                    <p className="mt-2 text-[14px] leading-relaxed text-muted">
+                      {entry.detail}
+                    </p>
+                  ) : null}
+                </>
+              ) : (
+                /* Years still ahead: the slot exists, the story does not.
+                   A short rule reads as deliberately unwritten. */
+                <div
+                  aria-hidden
+                  className="mt-3 h-px w-14 bg-[var(--line-strong)]"
+                />
+              )}
             </motion.li>
           ))}
         </ol>

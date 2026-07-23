@@ -64,22 +64,31 @@ export function Hero() {
               Class of 2029
             </motion.p>
 
-            <h1 className="font-display text-[clamp(3rem,11vw,7rem)] font-semibold leading-[0.86] tracking-[-0.045em]">
+            <h1 className="font-display font-semibold leading-[0.86] tracking-[-0.045em]">
               <motion.span
                 custom={1}
                 variants={rise}
                 initial="hidden"
                 animate="show"
-                className="block"
+                className="mb-3 block text-[clamp(1.15rem,2.6vw,1.6rem)] font-medium tracking-[-0.02em] text-accent"
               >
-                DIVYESH
+                Hello, I&rsquo;m
               </motion.span>
               <motion.span
                 custom={2}
                 variants={rise}
                 initial="hidden"
                 animate="show"
-                className="block text-[var(--fg-subtle)]"
+                className="block text-[clamp(3rem,11vw,7rem)]"
+              >
+                DIVYESH
+              </motion.span>
+              <motion.span
+                custom={3}
+                variants={rise}
+                initial="hidden"
+                animate="show"
+                className="block text-[clamp(3rem,11vw,7rem)] text-[var(--fg-subtle)]"
               >
                 KOLLI
               </motion.span>
@@ -87,7 +96,7 @@ export function Hero() {
 
             {/* Roles cycle in mono — the metadata line under the name. */}
             <motion.p
-              custom={3}
+              custom={4}
               variants={rise}
               initial="hidden"
               animate="show"
@@ -97,7 +106,7 @@ export function Hero() {
             </motion.p>
 
             <motion.p
-              custom={4}
+              custom={5}
               variants={rise}
               initial="hidden"
               animate="show"
@@ -107,7 +116,7 @@ export function Hero() {
             </motion.p>
 
             <motion.div
-              custom={5}
+              custom={6}
               variants={rise}
               initial="hidden"
               animate="show"
