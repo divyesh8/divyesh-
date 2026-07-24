@@ -31,7 +31,7 @@ const PROFILES: Profile[] = [
   },
   {
     name: "Instagram",
-    handle: "Coming soon",
+    handle: "@_divyesshh",
     href: SOCIALS.instagram,
     Icon: Instagram,
   },

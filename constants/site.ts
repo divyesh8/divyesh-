@@ -20,8 +20,7 @@ export const SOCIALS = {
   github: "https://github.com/divyesh8",
   linkedin: "https://www.linkedin.com/in/divyesh-kolli-690b0a102/",
   leetcode: "https://leetcode.com/u/_divyesshh/",
-  /** Not published yet — the card renders in a disabled state. */
-  instagram: null as string | null,
+  instagram: "https://www.instagram.com/_divyesshh",
 };
 
 export type SectionId =
