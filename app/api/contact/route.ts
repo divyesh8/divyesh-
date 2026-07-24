@@ -68,6 +68,11 @@ export async function POST(request: Request) {
   // that could break or inject into the header.
   const safeName = name.replace(/[\r\n"<>]/g, " ").trim().slice(0, 80);
   const fromAddress = process.env.CONTACT_FROM ?? "onboarding@resend.dev";
+  // Where submissions are delivered. Defaults to the public address, but with
+  // Resend's shared onboarding sender this must be the email the Resend account
+  // was created with — set CONTACT_TO to that inbox. Once a domain is verified
+  // in Resend, CONTACT_TO can be any address.
+  const toAddress = process.env.CONTACT_TO ?? SITE.email;
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
