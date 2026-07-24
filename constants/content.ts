@@ -35,6 +35,7 @@ export const ABOUT = {
   languages: [
     { name: "English", level: "Professional" },
     { name: "Telugu", level: "Native" },
+    { name: "Hindi", level: "Fluent" },
   ],
 } as const;
 
