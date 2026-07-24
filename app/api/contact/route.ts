@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { SITE } from "@/constants/site";
 
 export const runtime = "nodejs";
 
@@ -68,11 +67,11 @@ export async function POST(request: Request) {
   // that could break or inject into the header.
   const safeName = name.replace(/[\r\n"<>]/g, " ").trim().slice(0, 80);
   const fromAddress = process.env.CONTACT_FROM ?? "onboarding@resend.dev";
-  // Where submissions are delivered. Defaults to the public address, but with
-  // Resend's shared onboarding sender this must be the email the Resend account
-  // was created with — set CONTACT_TO to that inbox. Once a domain is verified
-  // in Resend, CONTACT_TO can be any address.
-  const toAddress = process.env.CONTACT_TO ?? SITE.email;
+  // Where submissions are delivered. Resend's shared onboarding sender can only
+  // deliver to the address the Resend account was created with, so that inbox
+  // is the default — even though the site publicly shows a different address.
+  // Once a domain is verified in Resend, set CONTACT_TO to deliver anywhere.
+  const toAddress = process.env.CONTACT_TO ?? "kolli.divyesh08@gmail.com";
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -91,15 +90,11 @@ export async function POST(request: Request) {
     });
 
     if (!res.ok) {
+      // Log provider detail to server logs; keep the client response generic.
       const detail = await res.text().catch(() => "");
       console.error("Resend error", res.status, detail);
       return NextResponse.json(
-        {
-          error: "Could not send right now.",
-          fallback: true,
-          _to: toAddress,
-          _detail: detail.slice(0, 400),
-        },
+        { error: "Could not send right now.", fallback: true },
         { status: 502 },
       );
     }
