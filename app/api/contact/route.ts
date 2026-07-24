@@ -83,7 +83,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         from: `${safeName || "Portfolio"} <${fromAddress}>`,
-        to: [SITE.email],
+        to: [toAddress],
         reply_to: email,
         subject: `Portfolio — ${safeName || "New message"}`,
         text: `${message}\n\n—\n${name}\n${email}`,
@@ -91,15 +91,12 @@ export async function POST(request: Request) {
     });
 
     if (!res.ok) {
+      // Log the provider detail to the server (Vercel function logs) without
+      // exposing it to the client.
       const detail = await res.text().catch(() => "");
       console.error("Resend error", res.status, detail);
       return NextResponse.json(
-        {
-          error: "Could not send right now.",
-          fallback: true,
-          _status: res.status,
-          _detail: detail.slice(0, 400),
-        },
+        { error: "Could not send right now.", fallback: true },
         { status: 502 },
       );
     }
