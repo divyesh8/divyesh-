@@ -90,11 +90,16 @@ export async function POST(request: Request) {
     });
 
     if (!res.ok) {
-      // Log provider detail to server logs; keep the client response generic.
       const detail = await res.text().catch(() => "");
       console.error("Resend error", res.status, detail);
       return NextResponse.json(
-        { error: "Could not send right now.", fallback: true },
+        {
+          error: "Could not send right now.",
+          fallback: true,
+          _build: "d8ea3e5",
+          _to: toAddress,
+          _detail: detail.slice(0, 400),
+        },
         { status: 502 },
       );
     }
