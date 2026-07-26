@@ -244,7 +244,10 @@ export type JourneyEntry = {
   status: "done" | "active" | "future";
 };
 
-export const JOURNEY: JourneyEntry[] = [
+/** The hand-written narrative — learning milestones, education, and the road
+ *  ahead. Shipped projects are merged in automatically from the live GitHub
+ *  repos (see buildJourney), so they never need adding here by hand. */
+export const JOURNEY_NARRATIVE: JourneyEntry[] = [
   {
     year: "2023",
     title: "Python mini projects",
@@ -266,24 +269,40 @@ export const JOURNEY: JourneyEntry[] = [
       "Computer Science and Engineering, Cloud Computing specialisation. Class of 2029.",
     status: "done",
   },
-  {
-    year: "2026",
-    title: "Built Ragebait",
-    detail:
-      "A real-time AI battle platform with matchmaking, WebSocket chat, an XP system, and model-judged scoring.",
-    status: "active",
-  },
-  {
-    year: "2026",
-    title: "Building WEDXUI Fit",
-    detail:
-      "An AI fitness platform with personalized planning and body analytics. In active development.",
-    status: "active",
-  },
   { year: "2027", status: "future" },
   { year: "2028", status: "future" },
   { year: "2029", status: "future" },
 ];
+
+/**
+ * Merge the curated narrative with project milestones derived from the live
+ * GitHub repo list, so a shipped project appears on the timeline on its own.
+ * Projects with a live site or that are complete read as "done"; only ones
+ * explicitly marked "Ongoing" show as in progress. A blank future-year
+ * placeholder is dropped once a real project fills that year.
+ */
+export function buildJourney(projects: Project[]): JourneyEntry[] {
+  const projectEntries: JourneyEntry[] = projects.map((p) => ({
+    year: p.year,
+    title: p.title,
+    detail: p.description,
+    status: p.status === "Ongoing" ? "active" : "done",
+  }));
+
+  const projectYears = new Set(projectEntries.map((e) => e.year));
+  const narrative = JOURNEY_NARRATIVE.filter(
+    (e) => e.title !== undefined || !projectYears.has(e.year),
+  );
+
+  return [...narrative, ...projectEntries].sort((a, b) => {
+    const ay = Number.parseInt(a.year, 10);
+    const by = Number.parseInt(b.year, 10);
+    if (Number.isNaN(ay) && Number.isNaN(by)) return 0;
+    if (Number.isNaN(ay)) return 1;
+    if (Number.isNaN(by)) return -1;
+    return ay - by;
+  });
+}
 
 export const CERTIFICATIONS = [
   "Python Programming Course — Udemy / Coursera",
