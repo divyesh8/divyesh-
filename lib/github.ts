@@ -5,6 +5,13 @@ import type {
   GitHubStats,
   LanguageStat,
 } from "@/lib/types";
+import {
+  FALLBACK_PROJECTS,
+  PORTFOLIO_REPO,
+  PROJECT_OVERRIDES,
+  type Project,
+  type ProjectTag,
+} from "@/constants/content";
 import { SITE } from "@/constants/site";
 
 const API = "https://api.github.com";
@@ -229,4 +236,109 @@ export async function getGitHubStats(): Promise<GitHubStats> {
     calendar,
     totalStars: repos.reduce((sum, r) => sum + r.stars, 0),
   };
+}
+
+/* ------------------------------------------------------------------
+   Featured projects, generated from the live repo list.
+
+   Any repo with a description or a live URL (homepage) is featured
+   automatically — so a newly deployed project appears on the portfolio
+   with no code change. Bare repos (no description, no site) stay hidden.
+   Flagship repos are enriched from PROJECT_OVERRIDES; everything else is
+   derived from the repo's own metadata.
+   ------------------------------------------------------------------ */
+
+type ProjectRepo = {
+  name: string;
+  description: string | null;
+  html_url: string;
+  homepage: string | null;
+  language: string | null;
+  topics?: string[];
+  fork: boolean;
+  archived: boolean;
+  created_at: string;
+  pushed_at: string;
+};
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const prettify = (name: string) =>
+  name
+    .replace(/[-_]+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
+function deriveTags(r: ProjectRepo): ProjectTag[] {
+  const hay = `${r.name} ${r.description ?? ""} ${(r.topics ?? []).join(" ")}`.toLowerCase();
+  const lang = (r.language ?? "").toLowerCase();
+  const tags = new Set<ProjectTag>();
+  if (/(^|\W)(ai|ml|gpt|llm|openai|genai)(\W|$)/.test(hay)) tags.add("ai");
+  if (["java", "c", "c++", "go", "rust"].includes(lang) && !r.homepage) {
+    tags.add("systems");
+  }
+  if (r.homepage || ["typescript", "javascript"].includes(lang)) tags.add("web");
+  if (tags.size === 0) tags.add(r.homepage ? "web" : "systems");
+  return [...tags];
+}
+
+export async function getProjects(): Promise<Project[]> {
+  try {
+    const repos = await gh<ProjectRepo[]>(
+      `/users/${SITE.handle}/repos?per_page=100&sort=pushed`,
+    );
+
+    const featured = repos.filter(
+      (r) =>
+        !r.fork &&
+        !r.archived &&
+        r.name.toLowerCase() !== PORTFOLIO_REPO.toLowerCase() &&
+        (Boolean(r.homepage) ||
+          Boolean(r.description) ||
+          Boolean(PROJECT_OVERRIDES[r.name.toLowerCase()])),
+    );
+
+    if (!featured.length) return FALLBACK_PROJECTS;
+
+    const projects: Project[] = featured.map((r) => {
+      const key = r.name.toLowerCase();
+      const o = PROJECT_OVERRIDES[key];
+      return {
+        slug: key,
+        title: o?.title ?? prettify(r.name),
+        kind: o?.kind ?? (r.language ? `${r.language} project` : "Project"),
+        year: o?.year ?? new Date(r.created_at).getFullYear().toString(),
+        status: o?.status ?? (r.homepage ? "Live" : "Open Source"),
+        description: o?.description ?? r.description ?? "",
+        features: o?.features ?? [],
+        stack:
+          o?.stack ??
+          (r.topics?.length
+            ? r.topics.slice(0, 6).map(cap)
+            : r.language
+              ? [r.language]
+              : []),
+        href: o?.href ?? r.homepage ?? null,
+        repo: o?.repo ?? r.html_url,
+        tags: o?.tags ?? deriveTags(r),
+        motif: o?.motif ?? "default",
+      };
+    });
+
+    // Flagship overrides first, in their defined order; the rest keep the
+    // API's pushed-date order (most recent first).
+    const order = Object.keys(PROJECT_OVERRIDES);
+    projects.sort((a, b) => {
+      const ai = order.indexOf(a.slug);
+      const bi = order.indexOf(b.slug);
+      if (ai === -1 && bi === -1) return 0;
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+
+    return projects.slice(0, 6);
+  } catch {
+    return FALLBACK_PROJECTS;
+  }
 }

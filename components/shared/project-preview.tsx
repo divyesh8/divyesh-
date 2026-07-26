@@ -131,18 +131,49 @@ function Motif({ project }: { project: Project }) {
     );
   }
 
-  // bots — a scheduler fanning out to autonomous agents.
+  if (project.motif === "bots") {
+    // A scheduler fanning out to autonomous agents.
+    return (
+      <svg viewBox="0 0 160 100" className="h-full w-full" aria-hidden>
+        <rect x="70" y="16" width="20" height="14" rx="3" fill="none" stroke={accent} strokeWidth="0.7" />
+        <circle cx="80" cy="23" r="2" fill={accent} />
+        {[28, 60, 100, 132].map((cx) => (
+          <g key={cx}>
+            <path d={`M 80 32 C 80 52, ${cx} 52, ${cx} 66`} fill="none" stroke="var(--line-strong)" strokeWidth="0.5" />
+            <rect x={cx - 7} y="68" width="14" height="12" rx="3" fill="none" stroke="var(--line-strong)" strokeWidth="0.6" />
+            <circle cx={cx} cy="74" r="1.6" fill="var(--fg-muted)" />
+          </g>
+        ))}
+      </svg>
+    );
+  }
+
+  // default — a monogram over faint nodes, for auto-detected repos.
+  const initials = project.title
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   return (
-    <svg viewBox="0 0 160 100" className="h-full w-full">
-      <rect x="70" y="16" width="20" height="14" rx="3" fill="none" stroke={accent} strokeWidth="0.7" />
-      <circle cx="80" cy="23" r="2" fill={accent} />
-      {[28, 60, 100, 132].map((cx) => (
-        <g key={cx}>
-          <path d={`M 80 32 C 80 52, ${cx} 52, ${cx} 66`} fill="none" stroke="var(--line-strong)" strokeWidth="0.5" />
-          <rect x={cx - 7} y="68" width="14" height="12" rx="3" fill="none" stroke="var(--line-strong)" strokeWidth="0.6" />
-          <circle cx={cx} cy="74" r="1.6" fill="var(--fg-muted)" />
-        </g>
+    <svg viewBox="0 0 160 100" className="h-full w-full" aria-hidden>
+      {[40, 80, 120].map((x) => (
+        <circle key={x} cx={x} cy={22} r="1.4" fill="var(--line-strong)" />
       ))}
+      <line x1="30" y1="22" x2="130" y2="22" stroke="var(--line)" strokeWidth="0.5" />
+      <text
+        x="80"
+        y="64"
+        textAnchor="middle"
+        fontFamily="monospace"
+        fontSize="30"
+        fontWeight="700"
+        fill={accent}
+        opacity="0.9"
+      >
+        {initials}
+      </text>
+      <line x1="46" y1="80" x2="114" y2="80" stroke="var(--line-strong)" strokeWidth="0.6" />
     </svg>
   );
 }

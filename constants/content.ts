@@ -115,25 +115,40 @@ export const CONCEPTS = [
   "WebSockets",
 ] as const;
 
+export type ProjectTag = "ai" | "web" | "product" | "systems";
+
 export type Project = {
   slug: string;
   title: string;
   /** Short qualifier shown beside the title. */
   kind: string;
   year: string;
-  status: "Live" | "Ongoing";
+  /** "Live", "Ongoing", "Open Source", … Only "Live" gets the accent dot. */
+  status: string;
   description: string;
   features: string[];
   stack: string[];
   href: string | null;
   repo: string | null;
-  tags: ("ai" | "web" | "product")[];
-  /** Drives the generated preview artwork. */
-  motif: "arena" | "fitness" | "bots";
+  tags: ProjectTag[];
+  /** Drives the generated preview artwork. Unknown values fall back to a
+   *  generic monogram, so auto-detected repos still render cleanly. */
+  motif: string;
 };
 
-export const PROJECTS: Project[] = [
-  {
+/** The portfolio's own repo — never listed as a project. */
+export const PORTFOLIO_REPO = "divyesh-";
+
+/**
+ * Curated detail for flagship repos, keyed by lowercased GitHub repo name.
+ * The Work section is generated from the live GitHub repo list (see
+ * lib/github.ts getProjects) — any repo with a description or live URL appears
+ * automatically, no code change needed. These overrides layer richer copy,
+ * hand-picked feature lists and preview art on top of the live data, and
+ * double as the offline fallback when the GitHub API is unreachable.
+ */
+export const PROJECT_OVERRIDES: Record<string, Project> = {
+  ragebait: {
     slug: "ragebait",
     title: "Ragebait",
     kind: "AI Powered Battle Platform",
@@ -159,11 +174,33 @@ export const PROJECTS: Project[] = [
       "Tailwind",
     ],
     href: "https://ragebait-v5.vercel.app/",
-    repo: "https://github.com/divyesh8",
+    repo: "https://github.com/divyesh8/RageBait",
     tags: ["ai", "web", "product"],
     motif: "arena",
   },
-  {
+  nimbus: {
+    slug: "nimbus",
+    title: "Nimbus",
+    kind: "In-Memory Data Store",
+    year: "2026",
+    status: "Open Source",
+    description:
+      "A crash-recoverable, in-memory key-value store written in 100% pure Java — no frameworks, no dependencies. It speaks the real Redis wire protocol, so redis-cli and existing Redis clients talk to it unmodified.",
+    features: [
+      "Redis Wire Protocol",
+      "Microsecond Reads",
+      "Append-only Durability",
+      "Crash Recovery",
+      "Key Expiry / TTL",
+      "Zero Dependencies",
+    ],
+    stack: ["Java", "TCP Sockets", "Redis Protocol"],
+    href: null,
+    repo: "https://github.com/divyesh8/nimbus",
+    tags: ["systems"],
+    motif: "default",
+  },
+  "wedxui-fit": {
     slug: "wedxui-fit",
     title: "WEDXUI Fit",
     kind: "AI Fitness Platform",
@@ -180,31 +217,14 @@ export const PROJECTS: Project[] = [
     ],
     stack: ["Next.js", "TypeScript", "Tailwind", "PostgreSQL", "OpenAI"],
     href: "https://wedxui-fit.vercel.app/",
-    repo: null,
+    repo: "https://github.com/divyesh8/wedxui-fit",
     tags: ["ai", "product"],
     motif: "fitness",
   },
-  {
-    slug: "ragebait-bots",
-    title: "AI Bot Ecosystem",
-    kind: "Autonomous Agents for Ragebait",
-    year: "2026",
-    status: "Ongoing",
-    description:
-      "Bot accounts that generate topics, hold their own conversations, and enter battles on a schedule — so the platform stays alive for new users even at low traffic.",
-    features: [
-      "Topic Generation",
-      "AI Conversation Flow",
-      "Automated Scheduling",
-      "Cold-start Coverage",
-    ],
-    stack: ["Node.js", "OpenAI", "MongoDB", "Cron"],
-    href: null,
-    repo: "https://github.com/divyesh8",
-    tags: ["ai", "product"],
-    motif: "bots",
-  },
-];
+};
+
+/** Offline fallback if the GitHub API can't be reached at request time. */
+export const FALLBACK_PROJECTS: Project[] = Object.values(PROJECT_OVERRIDES);
 
 /** Filter chips for the work section. */
 export const PROJECT_FILTERS = [
@@ -212,6 +232,7 @@ export const PROJECT_FILTERS = [
   { id: "ai", label: "AI" },
   { id: "web", label: "Web" },
   { id: "product", label: "Product" },
+  { id: "systems", label: "Systems" },
 ] as const;
 
 export type JourneyEntry = {
