@@ -9,7 +9,7 @@ export const SITE = {
   location: "Chennai, India",
   university: "SRM Institute of Science and Technology",
   /** Override in production via NEXT_PUBLIC_SITE_URL. */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://divyeshkolli.vercel.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://divyeshkolli.fun",
   title: "Divyesh Kolli — Full Stack & AI Developer",
   description:
     "B.Tech Cloud Computing student at SRM building AI-powered products, real-time platforms, and scalable web applications.",

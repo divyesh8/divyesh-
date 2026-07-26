@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SITE } from "@/constants/site";
 
 export const runtime = "nodejs";
 
@@ -66,12 +67,10 @@ export async function POST(request: Request) {
   // reply_to is their address so Reply goes straight back. Strip characters
   // that could break or inject into the header.
   const safeName = name.replace(/[\r\n"<>]/g, " ").trim().slice(0, 80);
-  const fromAddress = process.env.CONTACT_FROM ?? "onboarding@resend.dev";
-  // Delivered to the Resend account's own inbox — the only recipient Resend's
-  // shared onboarding sender allows in testing mode. The site publicly shows a
-  // different address (see constants/site.ts). To deliver anywhere else, verify
-  // a domain at resend.com/domains, point CONTACT_FROM at it, and change this.
-  const toAddress = "kolli.divyesh08@gmail.com";
+  // divyeshkolli.fun is verified in Resend, so we send from a real address on
+  // the domain and can deliver to any inbox. Both are overridable via env.
+  const fromAddress = process.env.CONTACT_FROM ?? "contact@divyeshkolli.fun";
+  const toAddress = process.env.CONTACT_TO ?? SITE.email;
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
