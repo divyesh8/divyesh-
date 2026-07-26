@@ -169,6 +169,18 @@ export function ProjectsGallery({ projects }: { projects: Project[] }) {
                           </a>
                         </Button>
                       </Magnetic>
+                    ) : project.prototype ? (
+                      // Prototype / library — the button stays for parity but
+                      // never links anywhere, since there is no live site.
+                      <Button
+                        size="sm"
+                        disabled
+                        title="Prototype — no live demo"
+                        aria-label="Visit project (prototype — no live demo)"
+                      >
+                        Visit project
+                        <ArrowUpRight />
+                      </Button>
                     ) : null}
 
                     {project.repo ? (

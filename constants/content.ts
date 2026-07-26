@@ -134,6 +134,9 @@ export type Project = {
   /** Drives the generated preview artwork. Unknown values fall back to a
    *  generic monogram, so auto-detected repos still render cleanly. */
   motif: string;
+  /** A prototype or library with no live site — the "Visit project" button
+   *  renders present but disabled, never linking anywhere. */
+  prototype?: boolean;
 };
 
 /** The portfolio's own repo — never listed as a project. */
@@ -199,6 +202,7 @@ export const PROJECT_OVERRIDES: Record<string, Project> = {
     repo: "https://github.com/divyesh8/nimbus",
     tags: ["systems"],
     motif: "default",
+    prototype: true,
   },
   "wedxui-fit": {
     slug: "wedxui-fit",

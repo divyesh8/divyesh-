@@ -318,10 +318,13 @@ export async function getProjects(): Promise<Project[]> {
             : r.language
               ? [r.language]
               : []),
-        href: o?.href ?? r.homepage ?? null,
+        // A curated override wins outright — even when it sets href to null
+        // (a prototype with no live site); otherwise use the repo's homepage.
+        href: o ? o.href : (r.homepage ?? null),
         repo: o?.repo ?? r.html_url,
         tags: o?.tags ?? deriveTags(r),
         motif: o?.motif ?? "default",
+        prototype: o?.prototype ?? false,
       };
     });
 
